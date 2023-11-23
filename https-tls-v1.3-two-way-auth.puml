@@ -1,0 +1,18 @@
+@startuml
+group 握手阶段 [Handshake]
+    客户端 -> 服务端: **Client hello** \n其中包含支持的加密算法、支持的协议版本等信息。客户端还发送该特定密钥协商协议的密钥共享。
+    服务端 -> 客户端: **Server hello** \n服务器回复其选择的密钥协商协议。
+    服务端 -> 客户端: **Key Exchange（密钥协商）** \n服务器可能在Certificate消息中发送证书链，其中包含服务器的公钥证书。
+    服务端 -> 客户端: **Key Exchange（密钥协商）** \n服务器发送KeyShare扩展，其中包含用于协商主密钥的公钥（通常是Ephemeral Diffie-Hellman或ECDHE密钥）。
+    服务端 -> 客户端: <font color=red><b>**Key Exchange（密钥协商）** \n<font color=red><b>要求客户端发送证书
+    客户端 -> 服务端: <font color=red><b>**Client Certificate（客户端证书）** \n <font color=red><b>发送客户端的公钥证书。
+    服务端 <- 服务端: <font color=red><b>**客户端证书认证**</b></font>
+    服务端 -> 客户端: **认证** \n 服务器可能在Certificate消息中发送证书，但这是可选的，因为TLS 1.3中取消了强制要求服务器总是发送证书。
+    服务端 -> 客户端: **Finished** \n 双方分别发送Finished消息，其中包含用于验证握手是否成功的哈希值。
+    客户端 -> 服务端: **Finished** \n 双方分别发送Finished消息，其中包含用于验证握手是否成功的哈希值。
+end
+
+group 加密通信阶段 [Secure Data Transfer]
+    客户端 <-> 服务端: 客户端和服务器开始使用生成的会话密钥加密通信。
+end
+@enduml

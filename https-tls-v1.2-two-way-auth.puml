@@ -1,0 +1,22 @@
+@startuml
+group 握手阶段 [Handshake]
+    客户端 -> 服务端: **Client hello** \n其中包含支持的加密算法、支持的协议版本等信息。
+    服务端 -> 客户端: **Server hello** \n该消息包括服务器从客户端提供的 CipherSuite 中选择的 CipherSuite。\n服务器还发送其证书以及会话 ID 和另一个随机值。
+    服务端 -> 客户端: **Certificate** \n发送服务端证书。
+    客户端 -> 客户端: <font color=green><b>**认证阶段** \n<font color=green><b>客户端验证服务器的证书是否由受信任的证书颁发机构签发，以确保连接到正确的服务器。
+    服务端 -> 客户端: **Server key exchange** \n 传递必要的密码信息，使得 Client 可以完成预备主密钥的通信。
+    服务端 -> 客户端: <font color=red><b>**Certificate Request** \n <font color=red><b>请求客户端发送证书。
+    服务端 -> 客户端: **Server finished** \n 表示 Server hello 的信息发完了，之后就是等待客户端发过来的响应。
+    客户端 -> 服务端: <font color=red><b>**Client Certificate** \n <font color=red><b>向服务端发送自己的证书。
+    服务端 <- 服务端: <font color=red><b>**客户端证书认证**</b></font>
+    客户端 -> 服务端: **Client key exchange** \n 客户端生成一个预主密钥（Pre-Master Secret），并使用服务器的公钥进行加密后发送给服务器。
+    客户端 -> 服务端: **Change cipher spec** \n 让服务器知道它将在会话密钥的帮助下切换到对称加密。
+    客户端 -> 服务端: **Finished** \n 证明密钥交换和认证过程是成功的。
+    服务端 -> 客户端: **Change cipher spec** \n 服务器执行相同的操作并将其安全状态切换为对称加密。
+    服务端 -> 客户端: **Finished** \n 证明密钥交换和认证过程是成功的。
+end
+
+group 加密通信阶段 [Secure Data Transfer]
+    客户端 <-> 服务端: 客户端和服务器开始使用生成的会话密钥加密通信。
+end
+@enduml
